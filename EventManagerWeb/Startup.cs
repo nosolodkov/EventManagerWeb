@@ -1,12 +1,12 @@
+using EventData.Context;
+using EventServices;
+using EventData.DataContracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventManagerWeb
 {
@@ -22,7 +22,13 @@ namespace EventManagerWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IGuestService, GuestService>();
+
+            services.AddDbContext<EventDataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("EventsDbConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
