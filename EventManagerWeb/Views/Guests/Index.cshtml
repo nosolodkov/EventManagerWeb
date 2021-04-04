@@ -1,0 +1,28 @@
+﻿@model EventManagerWeb.Models.Guests.GuestsViewModel
+
+<div>
+    <h3>Guests List</h3>
+    <div id="guestsTable">
+        <table class="table table-condensed" id="guestsIndexTable">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var guest in Model.Guests)
+                {
+                    <tr>
+                        <td class="">@guest.FirstName</td>
+                        <td class="">@guest.LastName</td>
+                        <td class="">@guest.Email</td>
+                        <td class="">@guest.Comment</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

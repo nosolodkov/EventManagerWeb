@@ -9,7 +9,9 @@ namespace EventData.DataContracts
 
         Event GetByName(string eventName);
 
-        bool AddNewEvent(Event @event);
+        Event GetById(int id);
+
+        Event AddNewEvent(Event @event);
 
         void ArchiveEvent(Event @event);
     }

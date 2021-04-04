@@ -1,12 +1,21 @@
-﻿using EventData.DataContracts;
+﻿using EventData.Context;
+using EventData.DataContracts;
 using EventData.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EventServices
 {
     public class GuestService : IGuestService
     {
+        private EventDataContext _context;
+
+        public GuestService(EventDataContext context)
+        {
+            _context = context;
+        }
+
         public IGuestsImporter Importer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public IGuestsExporter Exporter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -22,7 +31,7 @@ namespace EventServices
 
         public IEnumerable<Guest> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Guests;
         }
 
         public Guest GetByEMail(string emailAddress)
@@ -32,7 +41,11 @@ namespace EventServices
 
         public Guest GetByName(string firstName, string lastName, string patronymic = null)
         {
-            throw new NotImplementedException();
+            return _context.Guests
+                .FirstOrDefault(g =>
+                    g.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase) &&
+                    g.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(patronymic, g.Patronymic, StringComparison.OrdinalIgnoreCase));
         }
 
         public void RemoveGuest(Guest guest)
