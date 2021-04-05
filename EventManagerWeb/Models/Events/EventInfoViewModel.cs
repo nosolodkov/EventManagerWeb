@@ -29,6 +29,9 @@ namespace EventManagerWeb.Models.Events
         [Required]
         public string EventType { get; set; }
 
+        [Required]
+        public List<string> AllEventTypes { get; set; } = new List<string>();
+
         /// <summary>
         /// The date when the event was added to the system.
         /// </summary>

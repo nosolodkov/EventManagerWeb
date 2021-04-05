@@ -6,6 +6,16 @@
 
 <div class="border container" style="padding:30px;">
     <form method="post">
+
+        @Html.AntiForgeryToken()
+
+        @if (!string.IsNullOrEmpty(ViewBag.ValidationErrorMessage))
+        {
+            <script type="text/javascript">
+                alert("@ViewBag.ValidationErrorMessage");
+            </script>
+        }
+
         @if (Model.Id != 0)
         {
             <input type="hidden" asp-for="Id" />
@@ -37,8 +47,11 @@
                 <label asp-for="EventType"></label>
             </div>
             <div class="col-12">
-                <input asp-for="EventType" class="form-control" />
-                <span asp-validation-for="EventType" class="text-danger"></span>
+                @Html.DropDownList(
+                    "EventType",
+                    new SelectList(
+                        Model.AllEventTypes.Select(x => new { Value = x, Text = x }),
+                        "Value", "Text"), null, new { @class = "form-control" })
             </div>
         </div>
 

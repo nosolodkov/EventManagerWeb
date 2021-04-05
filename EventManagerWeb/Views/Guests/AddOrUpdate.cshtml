@@ -1,16 +1,24 @@
 ﻿@model EventManagerWeb.Models.Guests.GuestInfoViewModel
 
 <br />
-<h2 class="text-info">@(Model.Id != 0 ? "Edit Guest" : "Create Guest")</h2>
+<h2 class="text-info">@(@Model.Id != 0 ? "Edit Guest" : "Create Guest")</h2>
 <br />
 
 <div class="border container" style="padding:30px;">
     <form method="post">
-        @if (Model.Id != 0)
+        @if (@Model.Id != 0)
         {
             <input type="hidden" asp-for="Id" />
         }
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        @if (!string.IsNullOrEmpty(ViewBag.ValidationErrorMessage))
+        {
+            <script type="text/javascript">
+                alert("@ViewBag.ValidationErrorMessage");
+            </script>
+        }
+
 
         <div class="form-group row">
             <div class="col-3">
@@ -64,8 +72,8 @@
 
         <div class="form-group row">
             <div class="col-6">
-                <button type="submit" asp-route-eventId="@Model.AssociatedEvent.Id" class="btn btn-primary form-control">
-                    @(Model.Id != 0 ? "Update" : "Create")
+                <button type="submit" asp-route-eventId="@Model.AssociatedEvent?.Id" class="btn btn-primary form-control">
+                    @(@Model.Id != 0 ? "Update" : "Create")
                 </button>
             </div>
             <div class="col-6">

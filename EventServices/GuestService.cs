@@ -1,6 +1,7 @@
 ﻿using EventData.Context;
 using EventData.DataContracts;
 using EventData.Models;
+using EventServices.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace EventServices
 
         public Guest AddNewGuest(Guest guest, Event @event)
         {
-            if (!guest.ListOfEvents.Contains(@event))
+            if (@event != null && !guest.ListOfEvents.Contains(@event))
                 guest.ListOfEvents.Add(@event);
 
             var guestInDb = _context.Guests.FirstOrDefault(g => g.Id == guest.Id);
@@ -35,8 +36,23 @@ namespace EventServices
             Guest added;
             if (guestInDb == null)
             {
+                if (@event == null) return null;
+
+
                 // Create
-                added = _context.Add(guest).Entity;
+                guestInDb = GetByEMail(guest.Email);
+
+                if (guestInDb != null)
+                {
+                    throw new GuestIsAlreadyExistsException($"Guest with the same email {guest.Email} has alredy beed added!");
+                }
+
+                if (@event.GuestsCount + 1 > @event.MaxGuestsCount)
+                {
+                    throw new MaxGuestsForEventException("There are no empty seats left!");
+                }
+
+                added = _context.Add(guest)?.Entity;
             }
             else
             {

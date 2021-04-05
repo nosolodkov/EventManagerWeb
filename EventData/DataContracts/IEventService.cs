@@ -11,8 +11,10 @@ namespace EventData.DataContracts
 
         Event GetById(int id);
 
-        Event AddNewEvent(Event @event);
+        Event AddOrUpdate(Event @event);
 
         void ArchiveEvent(Event @event);
+
+        List<string> GetAllEventTypes();
     }
 }

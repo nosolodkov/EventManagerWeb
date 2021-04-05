@@ -2,6 +2,7 @@
 using EventData.Models;
 using EventManagerWeb.Models.Events;
 using EventManagerWeb.Models.Guests;
+using EventServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ namespace EventManagerWeb.Controllers.Events
                     DateHappens = result.DateHappens,
                     Description = result.Description,
                     EventType = result.EventTypeId.ToString("G"),
+                    AllEventTypes = _eventService.GetAllEventTypes(),
                     Location = result.Location,
                     MaxGuestsCount = result.MaxGuestsCount,
                     Name = result.Name,
@@ -60,17 +62,31 @@ namespace EventManagerWeb.Controllers.Events
         {
             if (ModelState.IsValid)
             {
-
-                var added = _eventService.AddNewEvent(new Event()
+                try
                 {
-                    Name = Event.Name,
-                    Description = Event.Description,
-                    DateAdded = DateTime.Now,
-                    DateHappens = Event.DateHappens,
-                    Location = Event.Location,
-                    MaxGuestsCount = Event.MaxGuestsCount,
-                    EventTypeId = Enum.Parse<EventTypeId>(Event.EventType)
-                });
+                    var added = _eventService.AddOrUpdate(new Event()
+                    {
+                        Name = Event.Name,
+                        Description = Event.Description,
+                        DateAdded = DateTime.Now,
+                        DateHappens = Event.DateHappens,
+                        Location = Event.Location,
+                        MaxGuestsCount = Event.MaxGuestsCount,
+                        EventTypeId = Enum.Parse<EventTypeId>(Event.EventType, true)
+                    });
+                }
+                catch (ArgumentException ae)
+                {
+                    ViewBag.ValidationErrorMessage = ae.Message;
+                    Event.AllEventTypes = _eventService.GetAllEventTypes();
+                    return View(Event);
+                }
+                catch (InvalidEventHappensTimeException ioe)
+                {
+                    ViewBag.ValidationErrorMessage = ioe.Message;
+                    Event.AllEventTypes = _eventService.GetAllEventTypes();
+                    return View(Event);
+                }
 
                 return RedirectToAction("Index");
             }
@@ -82,6 +98,7 @@ namespace EventManagerWeb.Controllers.Events
         {
 
             Event = new EventInfoViewModel();
+            Event.AllEventTypes = _eventService.GetAllEventTypes();
 
             if (id == null)
             {
@@ -114,6 +131,7 @@ namespace EventManagerWeb.Controllers.Events
         {
 
             Event = new EventInfoViewModel();
+            Event.AllEventTypes = _eventService.GetAllEventTypes();
 
             if (id == null)
             {

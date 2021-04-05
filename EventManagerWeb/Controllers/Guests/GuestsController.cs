@@ -2,6 +2,7 @@
 using EventData.Models;
 using EventManagerWeb.Models.Events;
 using EventManagerWeb.Models.Guests;
+using EventServices.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -57,33 +58,51 @@ namespace EventManagerWeb.Controllers.Guests
             {
                 var associatedEvent = _eventService.GetById(eventId);
 
-                var added = _guestService.AddNewGuest(new Guest(
+                try
+                {
+                    var added = _guestService.AddNewGuest(new Guest(
                     Guest.FirstName,
                     Guest.LastName,
                     Guest.Patronymic,
                     Guest.Email)
-                {
-                    Id = Guest.Id,
-                    Comment = Guest.Comment
-                }, associatedEvent);
+                    {
+                        Id = Guest.Id,
+                        Comment = Guest.Comment
+                    }, associatedEvent);
 
-                return RedirectToAction("ManageGuests", "Events", new { id = associatedEvent.Id });
+                    return RedirectToAction("ManageGuests", "Events", associatedEvent != null ? new { id = associatedEvent.Id } : null);
+                }
+                catch (GuestIsAlreadyExistsException ex)
+                {
+                    ViewBag.ValidationErrorMessage = ex.Message;
+                    return View(Guest);
+                }
+                catch (MaxGuestsForEventException mgex)
+                {
+                    ViewBag.ValidationErrorMessage = mgex.Message;
+                    return View(Guest);
+                }
+
             }
 
             return View(Guest);
         }
 
-        public IActionResult AddOrUpdate(int? id, int eventId)
+        public IActionResult AddOrUpdate(int? id, int? eventId)
         {
             Guest = new GuestInfoViewModel();
 
-            var associatedEvent = _eventService.GetById(eventId);
-            Guest.AssociatedEvent = new EventInfoViewModel
+            if (eventId != null)
             {
-                Id = associatedEvent.Id,
-                Name = associatedEvent.Name,
-                MaxGuestsCount = associatedEvent.MaxGuestsCount,
-            };
+                var associatedEvent = _eventService.GetById(eventId.Value);
+                Guest.AssociatedEvent = new EventInfoViewModel
+                {
+                    Id = associatedEvent.Id,
+                    Name = associatedEvent.Name,
+                    MaxGuestsCount = associatedEvent.MaxGuestsCount,
+                    AllEventTypes = _eventService.GetAllEventTypes(),
+                };
+            }
 
             //Guest.ListOfEvents.Add(Guest.AssociatedEvent);
 
@@ -109,14 +128,14 @@ namespace EventManagerWeb.Controllers.Guests
         }
 
         [HttpPost]
-        public IActionResult Remove(int id, int eventId)
+        public IActionResult Remove(int id, int? eventId)
         {
             var guest = _guestService.GetById(id);
-            var @event = _eventService.GetById(eventId);
+            var @event = eventId != null ? _eventService.GetById(eventId.Value) : null;
 
             _guestService.RemoveGuest(guest, @event);
 
-            return RedirectToAction("ManageGuests", "Events", new { id = @event.Id });
+            return RedirectToAction("ManageGuests", "Events", @event != null ? new { id = @event.Id } : null);
         }
     }
 }
