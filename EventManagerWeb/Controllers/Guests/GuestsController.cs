@@ -37,7 +37,12 @@ namespace EventManagerWeb.Controllers.Guests
                     LastName = result.LastName,
                     Patronymic = result.Patronymic,
                     Email = result.Email,
-                    Comment = result.Comment
+                    Comment = result.Comment,
+                    ListOfEvents = result.ListOfEvents.Select(e => new EventInfoViewModel
+                    {
+                        Id = e.Id,
+                        Name = e.Name,
+                    })
                 })
             };
 
@@ -80,7 +85,7 @@ namespace EventManagerWeb.Controllers.Guests
                 MaxGuestsCount = associatedEvent.MaxGuestsCount,
             };
 
-            Guest.ListOfEvents.Add(Guest.AssociatedEvent);
+            //Guest.ListOfEvents.Add(Guest.AssociatedEvent);
 
             if (id == null)
             {
@@ -101,6 +106,17 @@ namespace EventManagerWeb.Controllers.Guests
             }
 
             return View(Guest);
+        }
+
+        [HttpPost]
+        public IActionResult Remove(int id, int eventId)
+        {
+            var guest = _guestService.GetById(id);
+            var @event = _eventService.GetById(eventId);
+
+            _guestService.RemoveGuest(guest, @event);
+
+            return RedirectToAction("ManageGuests", "Events", new { id = @event.Id });
         }
     }
 }

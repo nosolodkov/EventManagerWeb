@@ -17,7 +17,7 @@ namespace EventManagerWeb.Models.Guests
 
         public string Comment { get; set; }
 
-        public List<EventInfoViewModel> ListOfEvents { get; set; } = new List<EventInfoViewModel>();
+        public IEnumerable<EventInfoViewModel> ListOfEvents { get; set; } = new List<EventInfoViewModel>();
 
         public EventInfoViewModel AssociatedEvent { get; set; }
     }

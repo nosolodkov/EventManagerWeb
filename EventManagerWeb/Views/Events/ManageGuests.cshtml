@@ -7,36 +7,38 @@
 <div>
     <h3>Guests List</h3>
     <div id="guestsTable">
-        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp customTable" id="guestsIndexTable">
-            <thead>
-                <tr>
-                    <th style="text-align:center">First Name</th>
-                    <th style="text-align:center">Last Name</th>
-                    <th style="text-align:center">Email</th>
-                    <th style="text-align:center">Comment</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var guest in Model.ListOfGuests)
-                {
+        <form method="post">
+            <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp customTable" id="guestsIndexTable">
+                <thead>
                     <tr>
-                        <td class="">@guest.FirstName</td>
-                        <td class="">@guest.LastName</td>
-                        <td class="">@guest.Email</td>
-                        <td class="">@guest.Comment</td>
-                        <td class="">
-                            <div class="text=center">
-                                <a asp-action="AddOrUpdate" asp-controller="Guests" asp-route-id="@guest.Id" asp-route-eventId="@guest.AssociatedEvent.Id" class="btn btn-warning text-white" style="cursor:pointer; width:70px;">
-                                    Edit
-                                </a>
-                                <button asp-action="Remove" asp-controller="Guests" asp-route-id="@guest.Id" onclick="return confirm('Are you sure you want to remove this guest?')" style="cursor:pointer; width:70px;" class="btn btn-danger text-white">Remove</button>
-                            </div>
-                        </td>
+                        <th style="text-align:center">First Name</th>
+                        <th style="text-align:center">Last Name</th>
+                        <th style="text-align:center">Email</th>
+                        <th style="text-align:center">Comment</th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var guest in Model.ListOfGuests)
+                    {
+                        <tr>
+                            <td class="">@guest.FirstName</td>
+                            <td class="">@guest.LastName</td>
+                            <td class="">@guest.Email</td>
+                            <td class="">@guest.Comment</td>
+                            <td class="">
+                                <div class="text=center">
+                                    <a asp-action="AddOrUpdate" asp-controller="Guests" asp-route-id="@guest.Id" asp-route-eventId="@guest.AssociatedEvent.Id" class="btn btn-warning text-white" style="cursor:pointer; width:70px;">
+                                        Edit
+                                    </a>
+                                    <button asp-action="Remove" asp-controller="Guests" asp-route-id="@guest.Id" asp-route-eventId="@Model.Id" onclick="return confirm('Are you sure you want to remove this guest?')" style="cursor:pointer; width:70px;" class="btn btn-danger text-white">Remove</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
     </div>
 
     <br />
