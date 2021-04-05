@@ -62,7 +62,7 @@ namespace EventManagerWeb.Controllers.Guests
                     Comment = Guest.Comment
                 }, associatedEvent);
 
-                return RedirectToAction("Index");
+                return RedirectToAction("ManageGuests", "Events", new { id = associatedEvent.Id });
             }
 
             return View(Guest);
