@@ -23,3 +23,15 @@ The web application should include the following pages:
 		if the event capacity is exceeded after the import, the application should alert the user about it and do not perform any import);
 		
 		- Export guests (downloads a CSV file with guest details).
+
+=========================================================================================
+
+BUILD AND RUN
+
+In VS Package Manager Console:
+
+1. sqllocaldb start "MSSQLLocalDB" 
+2. Update-Database. This command creates DB structure from EF Migration.
+3. Run SQL script 'fill_database.sql' for MSSQLLocalDB. The script will fill the test data into the database.
+
+Run Web application.
