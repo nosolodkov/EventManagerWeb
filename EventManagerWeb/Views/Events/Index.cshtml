@@ -7,15 +7,14 @@
             <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp customTable" id="eventsIndexTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Type</th>
-                        <th>Created</th>
-                        <th>Date Happens</th>
-                        <th>Location</th>
-                        <th>Guests</th>
-                        <th>Max Guests</th>
-                        <th>Seats Remaining</th>
+                        <th style="text-align:center">#</th>
+                        <th style="text-align:center">Name</th>
+                        <th style="text-align:center">Description</th>
+                        <th style="text-align:center">Type</th>
+                        <th style="text-align:center"> Date Happens</th>
+                        <th style="text-align:center">Guests</th>
+                        <th style="text-align:center">Max Guests</th>
+                        <th></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -23,23 +22,25 @@
                     @foreach (var eventModel in Model.Events)
                     {
                         <tr>
+                            <td class="">@eventModel.Id</td>
                             <td class="">@eventModel.Name</td>
                             <td class="">@eventModel.Description</td>
                             <td class="">@eventModel.EventType</td>
-                            <td class="">@eventModel.DateAdded</td>
                             <td class="">@eventModel.DateHappens</td>
-                            <td class="">@eventModel.Location</td>
                             <td class="">@eventModel.GuestsCount</td>
                             <td class="">@eventModel.MaxGuestsCount</td>
-                            <td class="">@eventModel.RemainingNumberOfSeats</td>
                             <td class="">
                                 <div class="text=center">
-                                    <a asp-action="AddOrUpdate" asp-route-id="@eventModel.Id" class="btn btn-success text-white" style="cursor:pointer; width:70px;">
+                                    <a asp-action="ManageGuests" asp-route-id="@eventModel.Id" class="btn btn-success text-white" style="cursor:pointer; width:120px;">
+                                        Manage Guests
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="">
+                                <div class="text=center">
+                                    <a asp-action="AddOrUpdate" asp-route-id="@eventModel.Id" class="btn btn-warning text-white" style="cursor:pointer; width:70px;">
                                         Edit
                                     </a>
-                                    @*<a asp-action="Archive" asp-route-id="@eventModel.Id" class="btn btn-danger text-white" style="cursor:pointer; width:70px;">
-                                            Archive
-                                        </a>*@
                                     <button asp-action="Archive" asp-controller="Events" asp-route-id="@eventModel.Id" onclick="return confirm('Are you sure you want to archive this event?')" style="cursor:pointer; width:70px;" class="btn btn-danger text-white">Archive</button>
                                 </div>
                             </td>
@@ -54,7 +55,7 @@
 
         <div class="form-group row">
             <div class="col-3">
-                <p><a class="btn btn-lg btn-info" role="button" asp-controller="Events" asp-action="AddOrUpdate">Add new Event</a></p>
+                <p><a class="btn btn-lg btn-info" role="button" asp-controller="Events" asp-action="AddOrUpdate">Add Event</a></p>
             </div>
         </div>
 

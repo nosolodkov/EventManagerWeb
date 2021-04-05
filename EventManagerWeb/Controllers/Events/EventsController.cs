@@ -1,6 +1,7 @@
 ﻿using EventData.DataContracts;
 using EventData.Models;
 using EventManagerWeb.Models.Events;
+using EventManagerWeb.Models.Guests;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -34,11 +35,19 @@ namespace EventManagerWeb.Controllers.Events
                     DateAdded = result.DateAdded,
                     DateHappens = result.DateHappens,
                     Description = result.Description,
-                    EventType = result.EventType.ToString("G"),
-                    GuestsCount = result.GuestsCount,
+                    EventType = result.EventTypeId.ToString("G"),
                     Location = result.Location,
                     MaxGuestsCount = result.MaxGuestsCount,
-                    Name = result.Name
+                    Name = result.Name,
+                    ListOfGuests = result.ListOfGuests.Select(g => new GuestInfoViewModel()
+                    {
+                        Id = g.Id,
+                        Email = g.Email,
+                        FirstName = g.FirstName,
+                        LastName = g.LastName,
+                        Patronymic = g.Patronymic,
+                        Comment = g.Comment,
+                    })
                 })
             };
 
@@ -58,10 +67,9 @@ namespace EventManagerWeb.Controllers.Events
                     Description = Event.Description,
                     DateAdded = DateTime.Now,
                     DateHappens = Event.DateHappens,
-                    GuestsCount = Event.GuestsCount,
                     Location = Event.Location,
                     MaxGuestsCount = Event.MaxGuestsCount,
-                    EventType = Enum.Parse<EventType>(Event.EventType)
+                    EventTypeId = Enum.Parse<EventTypeId>(Event.EventType)
                 });
 
                 return RedirectToAction("Index");
@@ -81,7 +89,7 @@ namespace EventManagerWeb.Controllers.Events
                 var creationDate = DateTime.Now;
                 Event.DateAdded = creationDate;
                 Event.DateHappens = creationDate;
-                Event.EventType = EventType.Conference.ToString("G");
+                Event.EventType = EventTypeId.Conference.ToString("G");
             }
             else
             {
@@ -93,11 +101,48 @@ namespace EventManagerWeb.Controllers.Events
                 Event.DateAdded = eventToEdit.DateAdded;
                 Event.DateHappens = eventToEdit.DateHappens;
                 Event.Description = eventToEdit.Description;
-                Event.EventType = eventToEdit.EventType.ToString("G");
-                Event.GuestsCount = eventToEdit.GuestsCount;
+                Event.EventType = eventToEdit.EventTypeId.ToString("G");
                 Event.Location = eventToEdit.Location;
                 Event.MaxGuestsCount = eventToEdit.MaxGuestsCount;
                 Event.Name = eventToEdit.Name;
+            }
+
+            return View(Event);
+        }
+
+        public IActionResult ManageGuests(int? id)
+        {
+
+            Event = new EventInfoViewModel();
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                // Edit
+                var eventToEdit = _eventService.GetById(id.Value);
+                if (eventToEdit == null) return NotFound();
+
+                Event.Id = eventToEdit.Id;
+                Event.DateAdded = eventToEdit.DateAdded;
+                Event.DateHappens = eventToEdit.DateHappens;
+                Event.Description = eventToEdit.Description;
+                Event.EventType = eventToEdit.EventTypeId.ToString("G");
+                Event.Location = eventToEdit.Location;
+                Event.MaxGuestsCount = eventToEdit.MaxGuestsCount;
+                Event.Name = eventToEdit.Name;
+                Event.ListOfGuests = eventToEdit.ListOfGuests.Select(g => new GuestInfoViewModel
+                {
+                    Id = g.Id,
+                    FirstName = g.FirstName,
+                    LastName = g.LastName,
+                    Patronymic = g.Patronymic,
+                    Email = g.Email,
+                    AssociatedEvent = Event,
+                    Comment = g.Comment,
+                });
             }
 
             return View(Event);

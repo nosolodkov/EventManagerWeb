@@ -1,4 +1,6 @@
 ﻿using EventData.DataContracts;
+using EventData.Models;
+using EventManagerWeb.Models.Events;
 using EventManagerWeb.Models.Guests;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,10 +13,15 @@ namespace EventManagerWeb.Controllers.Guests
     public class GuestsController : Controller
     {
         private IGuestService _guestService;
+        private IEventService _eventService;
 
-        public GuestsController(IGuestService guestService)
+        [BindProperty]
+        public GuestInfoViewModel Guest { get; set; }
+
+        public GuestsController(IGuestService guestService, IEventService eventService)
         {
             _guestService = guestService;
+            _eventService = eventService;
         }
 
         public IActionResult Index()
@@ -35,6 +42,65 @@ namespace EventManagerWeb.Controllers.Guests
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddOrUpdate(int eventId)
+        {
+            if (ModelState.IsValid)
+            {
+                var associatedEvent = _eventService.GetById(eventId);
+
+                var added = _guestService.AddNewGuest(new Guest(
+                    Guest.FirstName,
+                    Guest.LastName,
+                    Guest.Patronymic,
+                    Guest.Email)
+                {
+                    Id = Guest.Id,
+                    Comment = Guest.Comment
+                }, associatedEvent);
+
+                return RedirectToAction("Index");
+            }
+
+            return View(Guest);
+        }
+
+        public IActionResult AddOrUpdate(int? id, int eventId)
+        {
+            Guest = new GuestInfoViewModel();
+
+            var associatedEvent = _eventService.GetById(eventId);
+            Guest.AssociatedEvent = new EventInfoViewModel
+            {
+                Id = associatedEvent.Id,
+                Name = associatedEvent.Name,
+                MaxGuestsCount = associatedEvent.MaxGuestsCount,
+            };
+
+            Guest.ListOfEvents.Add(Guest.AssociatedEvent);
+
+            if (id == null)
+            {
+                // Add
+            }
+            else
+            {
+                // Edit
+                var guestToEdit = _guestService.GetById(id.Value);
+                if (guestToEdit == null) return NotFound();
+
+                Guest.Id = guestToEdit.Id;
+                Guest.FirstName = guestToEdit.FirstName;
+                Guest.LastName = guestToEdit.LastName;
+                Guest.Patronymic = guestToEdit.Patronymic;
+                Guest.Email = guestToEdit.Email;
+                Guest.Comment = guestToEdit.Comment;
+            }
+
+            return View(Guest);
         }
     }
 }

@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagerWeb", "EventMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventData", "EventData\EventData.csproj", "{5E40FC17-4F91-4A7C-87ED-432195F481EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventServices", "EventServices\EventServices.csproj", "{3C068DF9-1FF3-4C33-BD4B-7CA65D0F5700}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventServices", "EventServices\EventServices.csproj", "{3C068DF9-1FF3-4C33-BD4B-7CA65D0F5700}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{E8D42CB7-AA1F-4A64-9F10-7421B9B62AE6}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\fill_database.sql = scripts\fill_database.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

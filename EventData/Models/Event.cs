@@ -8,11 +8,11 @@ namespace EventData.Models
     /// <summary>
     /// Defines possible types of <see cref="Event"/>.
     /// </summary>
-    public enum EventType
+    public enum EventTypeId : int
     {
-        Conference,
-        Seminar,
-        Hackathon
+        Conference = 0,
+        Seminar = 1,
+        Hackathon = 2
     }
 
     /// <summary>
@@ -35,9 +35,10 @@ namespace EventData.Models
         public string Description { get; set; }
 
         /// <summary>
-        /// Event type.
+        /// Event type id.
         /// </summary>
-        public EventType EventType { get; set; }
+        public EventTypeId EventTypeId { get; set; }
+
 
         /// <summary>
         /// The date when the event was added to the system.
@@ -57,8 +58,7 @@ namespace EventData.Models
         /// <summary>
         /// The current number of guests.
         /// </summary>
-        [Required]
-        public int GuestsCount { get; set; }
+        public int GuestsCount { get { return ListOfGuests.Count; } }
 
         /// <summary>
         /// The maximum possible number of guests.
@@ -80,6 +80,6 @@ namespace EventData.Models
         /// <summary>
         /// List of invited guests.
         /// </summary>
-        public List<Guest> ListOfGuests { get; set; }
+        public List<Guest> ListOfGuests { get; set; } = new List<Guest>();
     }
 }

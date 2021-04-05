@@ -51,7 +51,7 @@ namespace EventManagerWeb.Models.Events
         /// <summary>
         /// The current number of guests.
         /// </summary>
-        public int GuestsCount { get; set; }
+        public int GuestsCount { get { return ListOfGuests.Count(); } }
 
         /// <summary>
         /// The maximum possible number of guests.
@@ -72,6 +72,6 @@ namespace EventManagerWeb.Models.Events
         /// <summary>
         /// List of invited guests.
         /// </summary>
-        public List<GuestInfoViewModel> ListOfGuests { get; set; }
+        public IEnumerable<GuestInfoViewModel> ListOfGuests { get; set; } = new List<GuestInfoViewModel>();
     }
 }

@@ -27,6 +27,8 @@ namespace EventData.Models
 
         public string Comment { get; set; }
 
+        public List<Event> ListOfEvents { get; set; } = new List<Event>();
+
 
         public Guest(string firstName, string lastName, string patronymic, string email)
         {

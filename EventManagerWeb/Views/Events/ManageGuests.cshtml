@@ -1,0 +1,57 @@
+﻿@model EventManagerWeb.Models.Events.EventInfoViewModel
+
+<br />
+<h2 class="text-info">Manage Guests for event '@Model.Name'</h2>
+<br />
+
+<div>
+    <h3>Guests List</h3>
+    <div id="guestsTable">
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp customTable" id="guestsIndexTable">
+            <thead>
+                <tr>
+                    <th style="text-align:center">First Name</th>
+                    <th style="text-align:center">Last Name</th>
+                    <th style="text-align:center">Email</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var guest in Model.ListOfGuests)
+                {
+                    <tr>
+                        <td class="">@guest.FirstName</td>
+                        <td class="">@guest.LastName</td>
+                        <td class="">@guest.Email</td>
+                        <td class="">
+                            <div class="text=center">
+                                <a asp-action="ManageGuests" asp-route-id="@guest.Id" class="btn btn-success text-white" style="cursor:pointer; width:120px;">
+                                    Manage Guests
+                                </a>
+                            </div>
+                        </td>
+                        <td class="">
+                            <div class="text=center">
+                                <a asp-action="AddOrUpdate" asp-route-id="@guest.Id" class="btn btn-warning text-white" style="cursor:pointer; width:70px;">
+                                    Edit
+                                </a>
+                                <button asp-action="Archive" asp-controller="Events" asp-route-id="@guest.Id" onclick="return confirm('Are you sure you want to archive this event?')" style="cursor:pointer; width:70px;" class="btn btn-danger text-white">Archive</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <br />
+    <br />
+
+    <div class="form-group row">
+        <div class="col-3">
+            <p><a class="btn btn-lg btn-info" role="button" asp-route-eventId="@Model.Id" asp-controller="Guests" asp-action="AddOrUpdate">Add Guest</a></p>
+        </div>
+    </div>
+
+</div>

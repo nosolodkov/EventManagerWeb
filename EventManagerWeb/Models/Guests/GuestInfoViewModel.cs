@@ -1,7 +1,5 @@
-﻿using System;
+﻿using EventManagerWeb.Models.Events;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventManagerWeb.Models.Guests
 {
@@ -18,5 +16,9 @@ namespace EventManagerWeb.Models.Guests
         public string Email { get; set; }
 
         public string Comment { get; set; }
+
+        public List<EventInfoViewModel> ListOfEvents { get; set; } = new List<EventInfoViewModel>();
+
+        public EventInfoViewModel AssociatedEvent { get; set; }
     }
 }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventData.Migrations
 {
     [DbContext(typeof(EventDataContext))]
-    [Migration("20210404184505_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20210405073901_Init migration")]
+    partial class Initmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -57,10 +57,7 @@ namespace EventData.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EventType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GuestsCount")
+                    b.Property<int>("EventTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Location")
@@ -78,6 +75,57 @@ namespace EventData.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("EventData.Models.EventType", b =>
+                {
+                    b.Property<int>("EventTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EventTypeVariantEventTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventTypeId");
+
+                    b.HasIndex("EventTypeVariantEventTypeId");
+
+                    b.ToTable("EventType");
+                });
+
+            modelBuilder.Entity("EventData.Models.EventTypeVariant", b =>
+                {
+                    b.Property<int>("EventTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EventTypeId");
+
+                    b.ToTable("EventTypeVariants");
+
+                    b.HasData(
+                        new
+                        {
+                            EventTypeId = 0,
+                            Name = "Conference"
+                        },
+                        new
+                        {
+                            EventTypeId = 1,
+                            Name = "Seminar"
+                        },
+                        new
+                        {
+                            EventTypeId = 2,
+                            Name = "Hackathon"
+                        });
+                });
+
             modelBuilder.Entity("EventData.Models.Guest", b =>
                 {
                     b.Property<int>("Id")
@@ -92,9 +140,6 @@ namespace EventData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EventId")
-                        .HasColumnType("int");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -108,9 +153,22 @@ namespace EventData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
-
                     b.ToTable("Guests");
+                });
+
+            modelBuilder.Entity("EventGuest", b =>
+                {
+                    b.Property<int>("ListOfEventsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ListOfGuestsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ListOfEventsId", "ListOfGuestsId");
+
+                    b.HasIndex("ListOfGuestsId");
+
+                    b.ToTable("EventGuest");
                 });
 
             modelBuilder.Entity("EventData.Models.ArchivedEvent", b =>
@@ -122,16 +180,33 @@ namespace EventData.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("EventData.Models.Guest", b =>
+            modelBuilder.Entity("EventData.Models.EventType", b =>
                 {
-                    b.HasOne("EventData.Models.Event", null)
-                        .WithMany("ListOfGuests")
-                        .HasForeignKey("EventId");
+                    b.HasOne("EventData.Models.EventTypeVariant", "EventTypeVariant")
+                        .WithMany("EventTypes")
+                        .HasForeignKey("EventTypeVariantEventTypeId");
+
+                    b.Navigation("EventTypeVariant");
                 });
 
-            modelBuilder.Entity("EventData.Models.Event", b =>
+            modelBuilder.Entity("EventGuest", b =>
                 {
-                    b.Navigation("ListOfGuests");
+                    b.HasOne("EventData.Models.Event", null)
+                        .WithMany()
+                        .HasForeignKey("ListOfEventsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventData.Models.Guest", null)
+                        .WithMany()
+                        .HasForeignKey("ListOfGuestsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EventData.Models.EventTypeVariant", b =>
+                {
+                    b.Navigation("EventTypes");
                 });
 #pragma warning restore 612, 618
         }

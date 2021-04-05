@@ -7,15 +7,17 @@ namespace EventData.DataContracts
     {
         IEnumerable<Guest> GetAll();
 
+        Guest GetById(int id);
+
         Guest GetByName(string firstName, string lastName, string patronymic = null);
 
         Guest GetByEMail(string emailAddress);
 
-        bool AddNewGuest(Guest guest);
+        Guest AddNewGuest(Guest guest, Event @event);
 
-        void RemoveGuest(Guest guest);
+        void RemoveGuest(Guest guest, Event @event);
 
-        bool AddMultipleGuests(List<Guest> guests);
+        bool AddMultipleGuests(List<Guest> guests, Event @event);
 
         IGuestsImporter Importer { get; set; }
 

@@ -4,6 +4,7 @@ using EventData.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventServices
 {
@@ -43,17 +44,18 @@ namespace EventServices
         {
             // Exclude archived events
             var archivedEventsIds = _context.ArchivedEvents.Select(ae => ae.Event.Id);
-            return _context.Events.Where(e => !archivedEventsIds.Contains(e.Id));
+            return _context.Events.Include(a => a.ListOfGuests).Where(e => !archivedEventsIds.Contains(e.Id));
         }
 
         public Event GetById(int id)
         {
-            return _context.Events.FirstOrDefault(e => e.Id == id);
+            return GetAll().FirstOrDefault(e => e.Id == id);
         }
 
         public Event GetByName(string eventName)
         {
-            throw new NotImplementedException();
+            return GetAll()
+                .FirstOrDefault(e => string.Equals(e.Name, eventName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
