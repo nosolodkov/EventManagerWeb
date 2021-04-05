@@ -15,7 +15,6 @@
                     <th style="text-align:center">Email</th>
                     <th style="text-align:center">Comment</th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -28,17 +27,10 @@
                         <td class="">@guest.Comment</td>
                         <td class="">
                             <div class="text=center">
-                                <a asp-action="ManageGuests" asp-route-id="@guest.Id" class="btn btn-success text-white" style="cursor:pointer; width:120px;">
-                                    Manage Guests
-                                </a>
-                            </div>
-                        </td>
-                        <td class="">
-                            <div class="text=center">
-                                <a asp-action="AddOrUpdate" asp-route-id="@guest.Id" class="btn btn-warning text-white" style="cursor:pointer; width:70px;">
+                                <a asp-action="AddOrUpdate" asp-controller="Guests" asp-route-id="@guest.Id" asp-route-eventId="@guest.AssociatedEvent.Id" class="btn btn-warning text-white" style="cursor:pointer; width:70px;">
                                     Edit
                                 </a>
-                                <button asp-action="Archive" asp-controller="Events" asp-route-id="@guest.Id" onclick="return confirm('Are you sure you want to archive this event?')" style="cursor:pointer; width:70px;" class="btn btn-danger text-white">Archive</button>
+                                <button asp-action="Remove" asp-controller="Guests" asp-route-id="@guest.Id" onclick="return confirm('Are you sure you want to remove this guest?')" style="cursor:pointer; width:70px;" class="btn btn-danger text-white">Remove</button>
                             </div>
                         </td>
                     </tr>

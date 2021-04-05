@@ -27,11 +27,34 @@ namespace EventServices
 
         public Guest AddNewGuest(Guest guest, Event @event)
         {
-            guest.ListOfEvents.Add(@event);
+            if (!guest.ListOfEvents.Contains(@event))
+                guest.ListOfEvents.Add(@event);
 
-            var added = _context.Add(guest);
+            var guestInDb = _context.Guests.FirstOrDefault(g => g.Id == guest.Id);
+
+            Guest added;
+            if (guestInDb == null)
+            {
+                // Create
+                added = _context.Add(guest).Entity;
+            }
+            else
+            {
+                // Update
+                _context.Update(guestInDb);
+
+                guestInDb.FirstName = guest.FirstName;
+                guestInDb.LastName = guest.LastName;
+                guestInDb.Patronymic = guest.Patronymic;
+                guestInDb.Email = guest.Email;
+                guestInDb.Comment = guest.Comment;
+                guestInDb.ListOfEvents = guest.ListOfEvents;
+
+                added = guestInDb;
+            }
+
             _context.SaveChanges();
-            return added.Entity;
+            return added;
         }
 
         public IEnumerable<Guest> GetAll()

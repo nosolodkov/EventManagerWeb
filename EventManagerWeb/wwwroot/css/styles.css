@@ -68,7 +68,9 @@
 }
 
 #events {
-    background: url('/images/events.jpg') bottom left 15% no-repeat #555;
+    background: url('/images/events.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 #eventsIndexTable {
@@ -84,7 +86,9 @@
     }
 
 #guests {
-    background: url('/images/guests.png') bottom right 15% no-repeat #555;
+    background: url('/images/guests.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .branchInfo {
